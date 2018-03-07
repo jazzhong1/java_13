@@ -1,56 +1,32 @@
 package com.iu.io4.emp;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.text.*;
 import java.util.*;
 
 import com.hong.io4.member.*;
+import com.iu.io4.emp.view.EmpView;
 
 public class EmpDAO {
 	private File file;
 	private FileReader fr;
 	private BufferedReader br;
+	private FileWriter fw;
 	private EmpDTO dto;
+	private ArrayList<EmpDTO> arrayList;
+	private Calendar ca;
+	private SimpleDateFormat dateFormat;
+	private Date date;
+	private Random random;
 
 	public EmpDAO() {
 		dto = new EmpDTO();
+		file = new File("c:\\test", "emp.txt");
 	}
 
-	
-	
-	public void textInfo(EmpDTO dto) {
-		file = new File("c:\\test", "emp.txt");
-
-		FileWriter fw = null;
-		try {
-			fw = new FileWriter(file,true);
-			fw.write(dto.getEmpNumber()+ ",");
-			fw.write(dto.getId()+ ",");
-			fw.write(dto.getAge()+ ",");
-			fw.write(dto.getDivision()+ ",");
-			fw.write(dto.getLank()+ ",");
-			fw.write(dto.getSal()+ ",");
-			fw.write(dto.getInsentive()+ ",");
-			fw.write(dto.getStartDay()+"\r\n");
-			fw.flush();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				fw.close();
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
-		}
-
-	}
-	
-	public ArrayList<EmpDTO> getMember(){
-		file = new File("c:\\test", "emp.txt");
-		BufferedReader br=null;
-		FileReader fr=null;
+	public ArrayList<EmpDTO> getMember() {
 		ArrayList<EmpDTO> arrayList = new ArrayList<EmpDTO>();
-		
 
 		try {
 
@@ -63,10 +39,10 @@ public class EmpDAO {
 				// trim()으로 앞뒤 공백제거
 
 				StringTokenizer st = new StringTokenizer(str, ",");
-				
-				while(st.hasMoreTokens()){
-					dto=new EmpDTO();
-					
+
+				while (st.hasMoreTokens()) {
+					dto = new EmpDTO();
+
 					dto.setEmpNumber(st.nextToken());
 					dto.setId(st.nextToken());
 					dto.setAge(Integer.parseInt(st.nextToken()));
@@ -76,7 +52,7 @@ public class EmpDAO {
 					dto.setInsentive(Integer.parseInt(st.nextToken()));
 					dto.setStartDay(st.nextToken());
 					arrayList.add(dto);
-					
+
 				}
 
 			}
@@ -84,8 +60,8 @@ public class EmpDAO {
 			e.printStackTrace();
 		} finally {
 			try {
-				br.close();
 				fr.close();
+				br.close();
 			} catch (IOException e2) {
 				e2.printStackTrace();
 			}
@@ -93,40 +69,37 @@ public class EmpDAO {
 
 		return arrayList; // Reference기본값은은 null
 	}
-	
 
 	public EmpDTO makeinfo() {
-		EmpDTO dto=new EmpDTO();
-		
-		Calendar ca = Calendar.getInstance();
-		Date date = ca.getTime();
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyMM");
+		dto = new EmpDTO();
+
+		ca = Calendar.getInstance();
+		date = ca.getTime();
+		dateFormat = new SimpleDateFormat("yyMM");
 		String empn = dateFormat.format(date);
-		Random random = new Random();
+		random = new Random();
 		int num = random.nextInt(100);
 		String s = String.valueOf(num);
 
-		if (s.length()==1) {
-			s = "0" + s;
-		} else if(s.length()==2) {
+		if (s.length() == 1) {
 			s = "00" + s;
+		} else if (s.length() == 2) {
+			s = "0" + s;
 		}
 		empn = empn + s;
 		dto.setEmpNumber(empn);
-		
-		date=ca.getTime();
-		dateFormat=new SimpleDateFormat("yyyy년도-MM월-dd일");
+
+		date = ca.getTime();
+		dateFormat = new SimpleDateFormat("yyyy년도-MM월-dd일");
 		String mstd = dateFormat.format(date);
-		
+
 		dto.setStartDay(mstd);
-		
+
 		return dto;
 	}
-	
-	
 
-	public EmpDTO join(EmpDTO empDTO) {
-		EmpDTO dto=new EmpDTO();
+	public void join(EmpDTO empDTO) {
+		dto = new EmpDTO();
 		dto.setEmpNumber(empDTO.getEmpNumber());
 		dto.setId(empDTO.getId());
 		dto.setAge(empDTO.getAge());
@@ -135,21 +108,116 @@ public class EmpDAO {
 		dto.setSal(empDTO.getSal());
 		dto.setInsentive(empDTO.getInsentive());
 		dto.setStartDay(empDTO.getStartDay());
-		
-		return dto;
-	}
-	
-	public EmpDTO search(String id){
-		
-		ArrayList<EmpDTO> arrayList = this.getMember();
-		for (int i = 0; i < arrayList.size(); i++) {
-			EmpDTO dto=new EmpDTO();
-			if(arrayList.get(i).getId().equals(id)){
-				dto=arrayList.get(i);
+
+		fw = null;
+		try {
+			fw = new FileWriter(file, true);
+			fw.write(dto.getEmpNumber() + ",");
+			fw.write(dto.getId() + ",");
+			fw.write(dto.getAge() + ",");
+			fw.write(dto.getDivision() + ",");
+			fw.write(dto.getLank() + ",");
+			fw.write(dto.getSal() + ",");
+			fw.write(dto.getInsentive() + ",");
+			fw.write(dto.getStartDay() + "\r\n");
+			fw.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				fw.close();
+			} catch (Exception e2) {
+				e2.printStackTrace();
 			}
 		}
-		
-		
+
+	}
+
+	public EmpDTO search(String id) {
+
+		arrayList = this.getMember();
+		EmpDTO dto = null;
+		for (int i = 0; i < arrayList.size(); i++) {
+			if (arrayList.get(i).getId().equals(id)) {
+				dto = arrayList.get(i);
+			}
+		}
+
 		return dto;
 	}
+
+	public boolean delete(String id) {
+		arrayList = this.getMember();
+		boolean check = false;
+		for (int i = 0; i < arrayList.size(); i++) {
+			dto = null;
+			if (arrayList.get(i).getId().equals(id)) {
+				dto = arrayList.get(i);
+				arrayList.remove(dto);
+				check = !check;
+			}
+
+		}
+
+		try {
+			fw = new FileWriter(file);
+			for (EmpDTO dto : arrayList) {
+				fw.write(dto.getEmpNumber() + ',');
+				fw.write(dto.getId() + ',');
+				fw.write(String.valueOf(dto.getAge()) + ',');
+				fw.write(dto.getDivision() + ',');
+				fw.write(dto.getLank() + ',');
+				fw.write(String.valueOf(dto.getSal()) + ',');
+				fw.write(String.valueOf(dto.getInsentive()) + ',');
+				fw.write(dto.getStartDay() + "\r\n");
+				fw.flush();
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				fw.close();
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
+
+		return check;
+
+	}
+
+	public EmpDTO check(EmpDTO cdto) {
+		
+		EmpView empView=new EmpView();
+		EmpInput empInput=new EmpInput();
+		
+		arrayList = this.getMember();
+		dto=null;
+		
+		
+		
+		
+		for (int i = 0; i < arrayList.size(); i++) {
+			if(arrayList.get(i).getId().equals(cdto.getId())){
+				empView.view("아이디가 중복됩니다.");
+				cdto.setId(empInput.check());
+				dto=cdto;
+				i=0;
+				continue;
+			}
+			
+			if(arrayList.get(i).getEmpNumber().equals(cdto.getEmpNumber())){
+				empView.view("사원번호가중복됩니다.");
+				cdto.setId(this.makeinfo().getEmpNumber());
+				dto=cdto;
+				i=0;
+				continue;
+			}
+			
+		}
+		return dto;
+
+	}
+
 }

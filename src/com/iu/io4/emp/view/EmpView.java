@@ -15,6 +15,7 @@ public class EmpView {
 	}
 	
 	public void view(EmpDTO dto){
+			System.out.println("============================");
 			System.out.println("사원번호: "+dto.getEmpNumber());
 			System.out.println("Id: "+dto.getId());
 			System.out.println("부서명: "+dto.getDivision());
