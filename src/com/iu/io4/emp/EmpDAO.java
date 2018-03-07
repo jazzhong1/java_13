@@ -19,6 +19,7 @@ public class EmpDAO {
 	private SimpleDateFormat dateFormat;
 	private Date date;
 	private Random random;
+	private StringTokenizer st;
 
 	public EmpDAO() {
 		dto = new EmpDTO();
@@ -26,7 +27,7 @@ public class EmpDAO {
 	}
 
 	public ArrayList<EmpDTO> getMember() {
-		ArrayList<EmpDTO> arrayList = new ArrayList<EmpDTO>();
+		ArrayList<EmpDTO> ar = new ArrayList<EmpDTO>();
 
 		try {
 
@@ -38,7 +39,7 @@ public class EmpDAO {
 				// 리턴안해주면 바뀌지않음 중오**
 				// trim()으로 앞뒤 공백제거
 
-				StringTokenizer st = new StringTokenizer(str, ",");
+				st = new StringTokenizer(str, ",");
 
 				while (st.hasMoreTokens()) {
 					dto = new EmpDTO();
@@ -51,7 +52,7 @@ public class EmpDAO {
 					dto.setSal(Integer.parseInt(st.nextToken()));
 					dto.setInsentive(Integer.parseInt(st.nextToken()));
 					dto.setStartDay(st.nextToken());
-					arrayList.add(dto);
+					ar.add(dto);
 
 				}
 
@@ -67,7 +68,7 @@ public class EmpDAO {
 			}
 		}
 
-		return arrayList; // Reference기본값은은 null
+		return ar; // Reference기본값은은 null
 	}
 
 	public EmpDTO makeinfo() {
@@ -194,9 +195,6 @@ public class EmpDAO {
 		
 		arrayList = this.getMember();
 		dto=null;
-		
-		
-		
 		
 		for (int i = 0; i < arrayList.size(); i++) {
 			if(arrayList.get(i).getId().equals(cdto.getId())){
