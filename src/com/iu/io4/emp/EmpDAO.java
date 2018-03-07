@@ -16,39 +16,14 @@ public class EmpDAO {
 		dto = new EmpDTO();
 	}
 
-	public void textInfo() {
-		file = new File("c:\\test", "emp.txt");
-
-		FileWriter fw = null;
-		try {
-			fw = new FileWriter(file);
-			fw.write("사원번호" + ",");
-			fw.write("id" + ',');
-			fw.write("나이" + ',');
-			fw.write("부서명" + ',');
-			fw.write("직책" + ',');
-			fw.write("월급" + ',');
-			fw.write("인센티브" + ',');
-			fw.write("입사일\r\n");
-			fw.flush();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				fw.close();
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
-		}
-
-	}
+	
 	
 	public void textInfo(EmpDTO dto) {
 		file = new File("c:\\test", "emp.txt");
 
 		FileWriter fw = null;
 		try {
-			fw = new FileWriter(file);
+			fw = new FileWriter(file,true);
 			fw.write(dto.getEmpNumber()+ ",");
 			fw.write(dto.getId()+ ",");
 			fw.write(dto.getAge()+ ",");
@@ -120,7 +95,9 @@ public class EmpDAO {
 	}
 	
 
-	public String makeEmpNum() {
+	public EmpDTO makeinfo() {
+		EmpDTO dto=new EmpDTO();
+		
 		Calendar ca = Calendar.getInstance();
 		Date date = ca.getTime();
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyMM");
@@ -129,34 +106,35 @@ public class EmpDAO {
 		int num = random.nextInt(100);
 		String s = String.valueOf(num);
 
-		if (s.length() > 1 && s.length() < 3) {
+		if (s.length()==1) {
 			s = "0" + s;
-		} else {
+		} else if(s.length()==2) {
 			s = "00" + s;
 		}
 		empn = empn + s;
-		return empn;
+		dto.setEmpNumber(empn);
+		
+		date=ca.getTime();
+		dateFormat=new SimpleDateFormat("yyyy년도-MM월-dd일");
+		String mstd = dateFormat.format(date);
+		
+		dto.setStartDay(mstd);
+		
+		return dto;
 	}
 	
-	public String makeStday() {
-		Calendar ca = Calendar.getInstance();
-		Date date = ca.getTime();
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy년도-MM월-dd일");
-		String mstd = dateFormat.format(date);
-		return mstd;
-		
-	}
+	
 
-	public EmpDTO empInfo(String empn, String mstd, EmpDTO empDTO) {
+	public EmpDTO join(EmpDTO empDTO) {
 		EmpDTO dto=new EmpDTO();
-		dto.setEmpNumber(empn);
+		dto.setEmpNumber(empDTO.getEmpNumber());
 		dto.setId(empDTO.getId());
 		dto.setAge(empDTO.getAge());
 		dto.setDivision(empDTO.getDivision());
 		dto.setLank(empDTO.getLank());
 		dto.setSal(empDTO.getSal());
 		dto.setInsentive(empDTO.getInsentive());
-		dto.setStartDay(mstd);
+		dto.setStartDay(empDTO.getStartDay());
 		
 		return dto;
 	}
