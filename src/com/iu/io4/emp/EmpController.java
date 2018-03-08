@@ -2,7 +2,6 @@ package com.iu.io4.emp;
 
 import java.util.*;
 
-import com.hong.io4.member.*;
 import com.iu.io4.emp.view.EmpView;
 
 public class EmpController {
@@ -38,6 +37,7 @@ public class EmpController {
 				dto=dao.search(empInput.search());
 				if(dto!=null){
 					empView.view("찾기 성공");
+					empView.view(dto);
 				}
 				else{
 					empView.view("찾기실패");
@@ -46,28 +46,25 @@ public class EmpController {
 				break;
 
 			case 3:
-				EmpDTO dto2;
-				dto2=dao.makeinfo();
-				dto=empInput.add(dto2);
-				dao.check(dto);
+				dto=empInput.add();
+				dto=dao.check(dto);
 				boolean a=dao.add(dto);
+				String b="정보입력실패";
 				if(a){
-					empView.view("정보입력완료");
+					b="정보입력완료";
 				}
-				else{
-					empView.view("실패");
-				}
+				empView.view(b);
+				
 				dto=null;
 				break;
 
 			case 4:
 				boolean c=dao.delete(empInput.delete());
+				String d="삭제성공";
 				if(c){
-					empView.view("삭제성공");
+					d="삭제성공";
 				}
-				else{
-					empView.view("삭제실패");
-				}
+				empView.view(d);
 				break;
 
 			default:
@@ -76,5 +73,7 @@ public class EmpController {
 			}
 
 		}
+		sc.close();
 	}
+	
 }

@@ -166,6 +166,7 @@ public class EmpDAO {
 
 		try {
 			fw = new FileWriter(file);
+			
 			for (EmpDTO dto : arrayList) {
 				fw.write(dto.getEmpNumber() + ',');
 				fw.write(dto.getId() + ',');
