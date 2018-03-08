@@ -72,33 +72,7 @@ public class EmpDAO {
 		return ar; // Reference기본값은은 null
 	}
 
-	public EmpDTO makeinfo() {
-		dto = new EmpDTO();
-
-		ca = Calendar.getInstance();
-		date = ca.getTime();
-		dateFormat = new SimpleDateFormat("yyMM");
-		String empn = dateFormat.format(date);
-		random = new Random();
-		int num = random.nextInt(100);
-		String s = String.valueOf(num);
-
-		if (s.length() == 1) {
-			s = "00" + s;
-		} else if (s.length() == 2) {
-			s = "0" + s;
-		}
-		empn = empn + s;
-		dto.setEmpNumber(empn);
-
-		date = ca.getTime();
-		dateFormat = new SimpleDateFormat("yyyy년도-MM월-dd일");
-		String mstd = dateFormat.format(date);
-
-		dto.setStartDay(mstd);
-
-		return dto;
-	}
+	
 
 	public boolean add(EmpDTO empDTO) {
 		dto = new EmpDTO();
@@ -212,7 +186,7 @@ public class EmpDAO {
 
 			if (arrayList.get(i).getEmpNumber().equals(cdto.getEmpNumber())) {
 				empView.view("사원번호가중복됩니다.");
-				cdto.setId(this.makeinfo().getEmpNumber());
+//				cdto.setId(this.makeinfo().getEmpNumber());
 				dto = cdto;
 				i = 0;
 				continue;

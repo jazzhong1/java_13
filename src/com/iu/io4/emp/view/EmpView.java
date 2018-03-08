@@ -23,7 +23,6 @@ public class EmpView {
 			System.out.println("월급: "+dto.getSal()+"만원");
 			System.out.println("인센티브: "+dto.getInsentive()+"만원");
 			System.out.println("입사날짜: "+dto.getStartDay());
-		
 	}
 	
 	public void view(String str){
