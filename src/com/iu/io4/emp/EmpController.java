@@ -48,9 +48,15 @@ public class EmpController {
 			case 3:
 				EmpDTO dto2;
 				dto2=dao.makeinfo();
-				dto=empInput.join(dto2);
+				dto=empInput.add(dto2);
 				dao.check(dto);
-				dao.join(dto);
+				boolean a=dao.add(dto);
+				if(a){
+					empView.view("정보입력완료");
+				}
+				else{
+					empView.view("실패");
+				}
 				dto=null;
 				break;
 

@@ -1,12 +1,10 @@
 package com.iu.io4.emp;
 
 import java.io.*;
-import java.lang.reflect.Array;
 import java.text.*;
 import java.util.*;
 
-import com.hong.io4.member.*;
-import com.iu.io4.emp.view.EmpView;
+import com.iu.io4.emp.view.*;
 
 public class EmpDAO {
 	private File file;
@@ -42,6 +40,9 @@ public class EmpDAO {
 				st = new StringTokenizer(str, ",");
 
 				while (st.hasMoreTokens()) {
+					if(st==null){
+						break;
+					}
 					dto = new EmpDTO();
 
 					dto.setEmpNumber(st.nextToken());
@@ -99,7 +100,7 @@ public class EmpDAO {
 		return dto;
 	}
 
-	public void join(EmpDTO empDTO) {
+	public boolean add(EmpDTO empDTO) {
 		dto = new EmpDTO();
 		dto.setEmpNumber(empDTO.getEmpNumber());
 		dto.setId(empDTO.getId());
@@ -111,6 +112,7 @@ public class EmpDAO {
 		dto.setStartDay(empDTO.getStartDay());
 
 		fw = null;
+		boolean check=true;
 		try {
 			fw = new FileWriter(file, true);
 			fw.write(dto.getEmpNumber() + ",");
@@ -121,8 +123,9 @@ public class EmpDAO {
 			fw.write(dto.getSal() + ",");
 			fw.write(dto.getInsentive() + ",");
 			fw.write(dto.getStartDay() + "\r\n");
-			fw.flush();
+			fw.flush(); //중요 마지막에 flush해서 밀어넣기 
 		} catch (IOException e) {
+			check=!check; //false라면 쓰여지지 않았다.
 			e.printStackTrace();
 		} finally {
 			try {
@@ -131,16 +134,17 @@ public class EmpDAO {
 				e2.printStackTrace();
 			}
 		}
+		return check;
 
 	}
 
-	public EmpDTO search(String id) {
+	public EmpDTO search(String empnum) {
 
 		arrayList = this.getMember();
 		EmpDTO dto = null;
-		for (int i = 0; i < arrayList.size(); i++) {
-			if (arrayList.get(i).getId().equals(id)) {
-				dto = arrayList.get(i);
+		for (EmpDTO empDTO: arrayList) {
+			if (empDTO.getEmpNumber().equals(empnum)) {
+				dto = empDTO;
 			}
 		}
 
@@ -189,33 +193,35 @@ public class EmpDAO {
 	}
 
 	public EmpDTO check(EmpDTO cdto) {
-		
-		EmpView empView=new EmpView();
-		EmpInput empInput=new EmpInput();
-		
+
+		EmpView empView = new EmpView();
+		EmpInput empInput = new EmpInput();
+
 		arrayList = this.getMember();
-		dto=null;
-		
+		dto = null;
+
 		for (int i = 0; i < arrayList.size(); i++) {
-			if(arrayList.get(i).getId().equals(cdto.getId())){
+			if (arrayList.get(i).getId().equals(cdto.getId())) {
 				empView.view("아이디가 중복됩니다.");
 				cdto.setId(empInput.check());
-				dto=cdto;
-				i=0;
+				dto = cdto;
+				i = 0;
 				continue;
 			}
-			
-			if(arrayList.get(i).getEmpNumber().equals(cdto.getEmpNumber())){
+
+			if (arrayList.get(i).getEmpNumber().equals(cdto.getEmpNumber())) {
 				empView.view("사원번호가중복됩니다.");
 				cdto.setId(this.makeinfo().getEmpNumber());
-				dto=cdto;
-				i=0;
+				dto = cdto;
+				i = 0;
 				continue;
 			}
-			
+
 		}
 		return dto;
 
 	}
+
+	
 
 }
